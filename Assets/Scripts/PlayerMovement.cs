@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isDashing = false;
     private Vector2 dashDir = Vector2.down;
     // private int lastDir = 2; // may use for animation
-    private int lastXDir = -1;
+    // private int lastXDir = -1; // also for animation
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,16 +22,16 @@ public class PlayerMovement : MonoBehaviour
         //set up animator stuff here
     }
     
-    int dirFromVect(Vector2 v)
-    {
-        return (Mathf.Abs(v.x) >= Mathf.Abs(v.y)) ? 1 : (v.y >= 0 ? 0 : 2);
-    }
+    // int dirFromVect(Vector2 v)
+    // {
+    //     return (Mathf.Abs(v.x) >= Mathf.Abs(v.y)) ? 1 : (v.y >= 0 ? 0 : 2);
+    // }
 
-    void flipX(Vector2 v)
-    {
-        if (Mathf.Abs(v.x) > 0.0001f) lastXDir = (v.x > 0f) ? +1 : -1;
-        playerSR.flipX = lastXDir > 0; // true when facing right
-    }
+    // void flipX(Vector2 v)
+    // {
+    //     if (Mathf.Abs(v.x) > 0.0001f) lastXDir = (v.x > 0f) ? +1 : -1;
+    //     playerSR.flipX = lastXDir > 0; // true when facing right
+    // }
 
     // Update is called once per frame
     void Update()
@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
             if (moveInput != Vector2.zero)
             {
                 dashDir = moveInput;
-                int facing = dirFromVect(moveInput);
+                // int facing = dirFromVect(moveInput); // animation
             }
 
             if (Input.GetKeyDown(KeyCode.Space) && canDash)
@@ -101,10 +101,10 @@ public class PlayerMovement : MonoBehaviour
         canDash = true;
     }
     
-    public void SetMovementToZero()
-    {
-        moveInput = Vector2.zero;
-        playerRB.linearVelocity = Vector2.zero;
-        isDashing = false;
-    }
+    // public void SetMovementToZero()
+    // {
+    //     moveInput = Vector2.zero;
+    //     playerRB.linearVelocity = Vector2.zero;
+    //     isDashing = false;
+    // }
 }
