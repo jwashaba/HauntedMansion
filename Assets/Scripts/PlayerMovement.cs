@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -13,25 +14,100 @@ public class PlayerMovement : MonoBehaviour
     public bool canDash = true;
     private bool isDashing = false;
     private Vector2 dashDir = Vector2.down;
-    // private int lastDir = 2; // may use for animation
-    // private int lastXDir = -1; // also for animation
+    private Animator animator;
+    private int lastDir = 2; // may use for animation
+    // private int lastXDir = 1; // also for animation
+
+    [Header("Idle Sprites")]
+    public Sprite idleUp;
+    public Sprite idleRight;
+    public Sprite idleDown;
+    public Sprite idleLeft;
+
+    [Header("Dash Sprites")]
+    public Sprite dashUp;
+    public Sprite dashRight;
+    public Sprite dashDown;
+    public Sprite dashLeft;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //set up animator stuff here
+        animator = GetComponent<Animator>();
+        animator.SetInteger("facingDirection", lastDir);
     }
     
-    // int dirFromVect(Vector2 v)
-    // {
-    //     return (Mathf.Abs(v.x) >= Mathf.Abs(v.y)) ? 1 : (v.y >= 0 ? 0 : 2);
-    // }
+    int dirFromVect(Vector2 v)
+    {
+        return (Mathf.Abs(v.x) >= Mathf.Abs(v.y)) ? (v.x >= 0 ? 1 : 3) : (v.y >= 0 ? 0 : 2);
+    }
 
     // void flipX(Vector2 v)
     // {
     //     if (Mathf.Abs(v.x) > 0.0001f) lastXDir = (v.x > 0f) ? +1 : -1;
-    //     playerSR.flipX = lastXDir > 0; // true when facing right
+    //     playerSR.flipX = lastXDir < 0; // true when facing left
     // }
+
+    void SetIdle()
+    {
+        animator.SetBool("isWalking", false);
+        if (animator.enabled) animator.enabled = false;
+        int f = lastDir;
+        switch (f)
+        {
+            case 0:
+                playerSR.sprite = idleUp;
+                break;
+            case 1:
+                playerSR.sprite = idleRight;
+                // playerSR.flipX = lastXDir < 0;
+                break;
+            case 2:
+                playerSR.sprite = idleDown;
+                break;
+            case 3:
+                playerSR.sprite = idleLeft;
+                break;
+        }
+        // Debug.Log($"idle sprite set to: {enemySR.sprite?.name} (facing={f})");
+    }
+
+    void SetWalking(int facing, Vector2 dir)
+    {
+        lastDir = facing;
+        if (!animator.enabled) animator.enabled = true;
+        animator.SetBool("isWalking", true);
+        animator.SetInteger("facingDirection", facing);
+
+        // if (facing == 1) flipX(dir);
+    }
+
+    void SetDash(Vector2 dir)
+    {
+        animator.SetBool("isWalking", false);
+        if (animator.enabled) animator.enabled = false;
+
+        int f = dirFromVect(dir);
+        Debug.Log(f);
+        lastDir = f;
+        switch (f)
+        {
+            case 0:
+                playerSR.sprite = dashUp;
+                break;
+            case 1:
+                playerSR.sprite = dashRight;
+                // playerSR.flipX = lastXDir < 0;
+                break;
+            case 2:
+                playerSR.sprite = dashDown;
+                break;
+            case 3:
+                playerSR.sprite = dashLeft;
+                break;
+        }
+        // Debug.Log($"idle sprite set to: {enemySR.sprite?.name} (facing={f})");
+    }
 
     // Update is called once per frame
     void Update()
@@ -68,13 +144,22 @@ public class PlayerMovement : MonoBehaviour
             if (moveInput != Vector2.zero)
             {
                 dashDir = moveInput;
-                // int facing = dirFromVect(moveInput); // animation
+                SetWalking(dirFromVect(moveInput), moveInput);
+            }
+            else
+            {
+                animator.SetBool("isWalking", false);
+                SetIdle();
             }
 
             if (Input.GetKeyDown(KeyCode.Space) && canDash)
             {
                 StartCoroutine(DashTiming());
             }
+        }
+        else
+        {
+            SetDash(dashDir);
         }
     }
 
