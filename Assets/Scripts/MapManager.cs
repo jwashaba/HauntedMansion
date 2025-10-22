@@ -125,6 +125,9 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 public class MapManager : MonoBehaviour
 {
@@ -139,15 +142,19 @@ public class MapManager : MonoBehaviour
     private Vector2 roomSize;         // world units (width, height)
     private Vector2 originBL;         // world bottom-left of starting room, key (0,0)
     private Vector2 rendCenterOffset; // bounds.center - transform.position
+    private GameObject currRoom;
+    private TilemapRenderer currRend;
     private Vector2Int currKey;
-
-    private int roomCount;
+    private int roomCount = 0;
 
     // one-shot gates for each edge of current room
     private bool wasBelowTop     = true;
     private bool wasLeftOfRight  = true;
     private bool wasAboveBottom  = true;
-    private bool wasRightOfLeft  = true;
+    private bool wasRightOfLeft = true;
+
+    [Header("Obstacles")]
+    [SerializeField] private GameObject[] obstaclePrefabs;
 
     void Start()
     {
@@ -170,9 +177,16 @@ public class MapManager : MonoBehaviour
 
     void Update()
     {
+        var keyNow = WorldToKey(playerCol.bounds.center);
+
+        if (!rooms.ContainsKey(keyNow))
+        {
+            TrySpawn(keyNow);
+        }
+
         currKey = WorldToKey(playerCol.bounds.center); // key for the room the player is currently in
-        var currRoom = rooms[currKey];
-        var currRend = currRoom.GetComponentInChildren<TilemapRenderer>();
+        currRoom = rooms[currKey];
+        currRend = currRoom.GetComponentInChildren<TilemapRenderer>();
 
         // bounds of current room
         float topY    = currRend.bounds.max.y;
@@ -206,10 +220,11 @@ public class MapManager : MonoBehaviour
 
     Vector2Int WorldToKey(Vector2 worldPos) // coordinate system for storing room identities
     {
+        const float EPS = 1e-4f;
         float dx = worldPos.x - originBL.x;
         float dy = worldPos.y - originBL.y;
-        int kx = Mathf.FloorToInt(dx / roomSize.x);
-        int ky = Mathf.FloorToInt(dy / roomSize.y);
+        int kx = Mathf.FloorToInt((dx + EPS) / roomSize.x);
+        int ky = Mathf.FloorToInt((dy + EPS) / roomSize.y);
         return new Vector2Int(kx, ky);
     }
 
@@ -225,17 +240,41 @@ public class MapManager : MonoBehaviour
     {
         if (!rooms.ContainsKey(key))
         {
-            var newRoom = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+            if (roomCount == 5)
+            {
+                Debug.Log("Room 5");
+            }
+            else if (roomCount == 10)
+            {
+                Debug.Log("Room 10");
+            }
+            else
+            {
+                var newRoom = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
 
-            var newRend = newRoom.GetComponentInChildren<TilemapRenderer>();
-            var offset = (Vector2)newRend.bounds.center - (Vector2)newRoom.transform.position; // double-check offset in case we change room size and I forget
+                var newRend = newRoom.GetComponentInChildren<TilemapRenderer>();
+                var offset = (Vector2)newRend.bounds.center - (Vector2)newRoom.transform.position; // double-check offset in case we change room size and I forget
 
-            Vector2 bl = originBL + new Vector2(key.x * roomSize.x, key.y * roomSize.y); // bottom left of new room
-            Vector2 center = bl + roomSize * 0.5f;
-            Vector2 targetPos = center - offset;
-            newRoom.transform.position = new Vector3(targetPos.x, targetPos.y, 0f);
+                Vector2 bl = originBL + new Vector2(key.x * roomSize.x, key.y * roomSize.y); // bottom left of new room
+                Vector2 center = bl + roomSize * 0.5f;
+                Vector2 targetPos = center - offset;
+                newRoom.transform.position = new Vector3(targetPos.x, targetPos.y, 0f);
 
-            rooms[key] = newRoom;
+                rooms[key] = newRoom;
+
+                GenerateObstacles(targetPos);
+            }
+            roomCount++;
         }
+    }
+
+    private void GenerateObstacles(Vector3 savedPos)
+    {
+        int randInt = Random.Range(0, obstaclePrefabs.Length);
+        GameObject setObject = Instantiate(obstaclePrefabs[randInt], savedPos, Quaternion.identity);
+        // for (int j = 0; j < setObject.transform.childCount; j++)
+        // {
+        //     GameObject child = setObject.transform.GetChild(j).gameObject;
+        // }
     }
 }

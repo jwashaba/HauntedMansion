@@ -100,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         if (animator.enabled) animator.enabled = false;
 
         int f = dirFromVect(dir);
-        Debug.Log(f);
+        // Debug.Log(f);
         lastDir = f;
         switch (f)
         {
@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
         if (animator.enabled) animator.enabled = false;
 
         int f = dirFromVect(dir);
-        Debug.Log(f);
+        // Debug.Log(f);
         lastDir = f;
         switch (f)
         {
