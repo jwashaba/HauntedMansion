@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using System.Runtime.InteropServices;
+using NUnit.Framework;
+// using System.Runtime.InteropServices;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,9 +12,14 @@ public class PlayerMovement : MonoBehaviour
     public float dashSpeed;
     public float dashTime;
     public float dashCooldown;
-    public bool canDash = true;
+    private bool canDash = true;
     private bool isDashing = false;
     private Vector2 dashDir = Vector2.down;
+    public float attackTime;
+    public float attackCooldown;
+    private bool canAttack = true;
+    private bool isAttacking = false;
+
     private Animator animator;
     private int lastDir = 2; // may use for animation
     // private int lastXDir = 1; // also for animation
@@ -29,6 +35,12 @@ public class PlayerMovement : MonoBehaviour
     public Sprite dashRight;
     public Sprite dashDown;
     public Sprite dashLeft;
+
+    [Header("Attack Sprites")]
+    public Sprite attackUp;
+    public Sprite attackRight;
+    public Sprite attackDown;
+    public Sprite attackLeft;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -106,7 +118,34 @@ public class PlayerMovement : MonoBehaviour
                 playerSR.sprite = dashLeft;
                 break;
         }
-        // Debug.Log($"idle sprite set to: {enemySR.sprite?.name} (facing={f})");
+        // Debug.Log($"dash sprite set to: {enemySR.sprite?.name} (facing={f})");
+    }
+
+    void SetAttack(Vector2 dir)
+    {
+        animator.SetBool("isWalking", false);
+        if (animator.enabled) animator.enabled = false;
+
+        int f = dirFromVect(dir);
+        Debug.Log(f);
+        lastDir = f;
+        switch (f)
+        {
+            case 0:
+                playerSR.sprite = attackUp;
+                break;
+            case 1:
+                playerSR.sprite = attackRight;
+                // playerSR.flipX = lastXDir < 0;
+                break;
+            case 2:
+                playerSR.sprite = attackDown;
+                break;
+            case 3:
+                playerSR.sprite = attackLeft;
+                break;
+        }
+        // Debug.Log($"attack sprite set to: {enemySR.sprite?.name} (facing={f})");
     }
 
     // Update is called once per frame
@@ -117,7 +156,15 @@ public class PlayerMovement : MonoBehaviour
 
         float x = 0f, y = 0f;
 
-        if (!isDashing)
+        if (isDashing)
+        {
+            SetDash(dashDir);
+        }
+        else if (isAttacking)
+        {
+            SetAttack(dashDir);
+        }
+        else
         {
             //horizontal movement
             if (Input.GetKey(KeyCode.A))
@@ -156,10 +203,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 StartCoroutine(DashTiming());
             }
-        }
-        else
-        {
-            SetDash(dashDir);
+
+            if (Input.GetKeyDown(KeyCode.Q) && canAttack)
+            {
+                StartCoroutine(AttackTiming());
+            }
         }
     }
 
@@ -185,8 +233,18 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }
+
+    IEnumerator AttackTiming()
+    {
+        canAttack = false;
+        isAttacking = true;
+        yield return new WaitForSeconds(attackTime);
+        isAttacking = false;
+        yield return new WaitForSeconds(attackCooldown);
+        canAttack = true;
+    }
     
-    // public void SetMovementToZero()
+    // public void SetMovementToZero() // used for plyer abilities/interactions that stop movement without time stop
     // {
     //     moveInput = Vector2.zero;
     //     playerRB.linearVelocity = Vector2.zero;

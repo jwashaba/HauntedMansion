@@ -554,15 +554,20 @@ MonoBehaviour:
   dashSpeed: 10
   dashTime: 0.2
   dashCooldown: 0.6
-  canDash: 1
+  attackTime: 0.2
+  attackCooldown: 0.25
   idleUp: {fileID: -5663929726516379571, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   idleRight: {fileID: 7012438262694639928, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   idleDown: {fileID: 3717136296564919577, guid: 6570403381c1a2541939682da95b9d16, type: 3}
-  idleLeft: {fileID: -5203625214701058945, guid: 6570403381c1a2541939682da95b9d16, type: 3}
+  idleLeft: {fileID: 924981917533391387, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   dashUp: {fileID: -964911388, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   dashRight: {fileID: -9119557184032117417, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   dashDown: {fileID: 632654592141932903, guid: 6570403381c1a2541939682da95b9d16, type: 3}
   dashLeft: {fileID: -1272726462, guid: 6570403381c1a2541939682da95b9d16, type: 3}
+  attackUp: {fileID: -1670227470, guid: 6570403381c1a2541939682da95b9d16, type: 3}
+  attackRight: {fileID: 99903983, guid: 6570403381c1a2541939682da95b9d16, type: 3}
+  attackDown: {fileID: -2115787266, guid: 6570403381c1a2541939682da95b9d16, type: 3}
+  attackLeft: {fileID: -257660192, guid: 6570403381c1a2541939682da95b9d16, type: 3}
 --- !u!61 &1616626863
 BoxCollider2D:
   m_ObjectHideFlags: 0
