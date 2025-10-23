@@ -1,10 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using NUnit.Framework;
+// using System.Numerics;
 // using System.Runtime.InteropServices;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public Transform Aim;
+    public bool isWalking = false;
+    public float x = 0f;
+    public float y = 0f;
     public SpriteRenderer playerSR;
     public Rigidbody2D playerRB;
     public float moveSpeed;
@@ -20,6 +25,10 @@ public class PlayerMovement : MonoBehaviour
     private bool canAttack = true;
     private bool isAttacking = false;
 
+    public GameObject Melee;
+    float atkDuration = 0.3f;
+
+    float atkTimer = 0f;
     private Animator animator;
     private int lastDir = 2; // may use for animation
     // private int lastXDir = 1; // also for animation
@@ -63,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
     void SetIdle()
     {
         animator.SetBool("isWalking", false);
+        isWalking = false;
         if (animator.enabled) animator.enabled = false;
         int f = lastDir;
         switch (f)
@@ -89,6 +99,7 @@ public class PlayerMovement : MonoBehaviour
         lastDir = facing;
         if (!animator.enabled) animator.enabled = true;
         animator.SetBool("isWalking", true);
+        isWalking = true;
         animator.SetInteger("facingDirection", facing);
 
         // if (facing == 1) flipX(dir);
@@ -97,6 +108,7 @@ public class PlayerMovement : MonoBehaviour
     void SetDash(Vector2 dir)
     {
         animator.SetBool("isWalking", false);
+        isWalking = false;
         if (animator.enabled) animator.enabled = false;
 
         int f = dirFromVect(dir);
@@ -124,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
     void SetAttack(Vector2 dir)
     {
         animator.SetBool("isWalking", false);
+        isWalking = false;
         if (animator.enabled) animator.enabled = false;
 
         int f = dirFromVect(dir);
@@ -151,11 +164,9 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // checkMeleeTimer();
         // stop  non-time-based controller inputs and processes when game is paused
         // if (SceneManager.Instance.gameIsPaused) return;
-
-        float x = 0f, y = 0f;
-
         if (isDashing)
         {
             SetDash(dashDir);
@@ -166,25 +177,28 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            //horizontal movement
-            if (Input.GetKey(KeyCode.A))
-            {
-                x = -1f;
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                x = 1f;
-            }
+            // //horizontal movement
+            // if (Input.GetKey(KeyCode.A))
+            // {
+            //     x = -1f;
+            // }
+            // else if (Input.GetKey(KeyCode.D))
+            // {
+            //     x = 1f;
+            // }
 
-            // vertical movement
-            if (Input.GetKey(KeyCode.W))
-            {
-                y = 1f;
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                y = -1f;
-            }
+            // // vertical movement
+            // if (Input.GetKey(KeyCode.W))
+            // {
+            //     y = 1f;
+            // }
+            // else if (Input.GetKey(KeyCode.S))
+            // {
+            //     y = -1f;
+            // }
+
+            x = Input.GetAxisRaw("Horizontal");
+            y = Input.GetAxisRaw("Vertical");
 
             moveInput = new Vector2(x, y).normalized;
 
@@ -192,6 +206,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 dashDir = moveInput;
                 SetWalking(dirFromVect(moveInput), moveInput);
+
             }
             else
             {
@@ -204,7 +219,7 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(DashTiming());
             }
 
-            if (Input.GetKeyDown(KeyCode.Q) && canAttack)
+            if (Input.GetKeyDown(KeyCode.J) && canAttack)
             {
                 StartCoroutine(AttackTiming());
             }
@@ -214,6 +229,11 @@ public class PlayerMovement : MonoBehaviour
     // physics loop for movement
     void FixedUpdate()
     {
+        if (isWalking)
+        {
+            Vector3 vector3 = Vector3.left * x + Vector3.down * y;
+            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+        }
         if (isDashing)
         {
             playerRB.linearVelocity = dashDir * dashSpeed;
@@ -238,12 +258,34 @@ public class PlayerMovement : MonoBehaviour
     {
         canAttack = false;
         isAttacking = true;
+        // call attack function
+        playerAttack();
         yield return new WaitForSeconds(attackTime);
         isAttacking = false;
         yield return new WaitForSeconds(attackCooldown);
+        Melee.SetActive(false);
         canAttack = true;
     }
+
+    void playerAttack()
+    {
+        Melee.SetActive(true);
+        // Call animator here.
+    }
     
+    // void checkMeleeTimer()
+    // {
+    //     if (isAttacking)
+    //     {
+    //         atkTimer += Time.deltaTime;
+    //         if (atkTimer >= atkDuration)
+    //         {
+    //             atkTimer = 0;
+    //             Melee.SetActive(false);
+    //         }
+    //     }
+    // }
+
     // public void SetMovementToZero() // used for plyer abilities/interactions that stop movement without time stop
     // {
     //     moveInput = Vector2.zero;
