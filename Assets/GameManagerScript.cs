@@ -63,6 +63,12 @@ public class GameManagerScript : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void LoadFAQScene()
+    {
+        SceneManager.LoadScene("FAQScene");
+        Cursor.visible = true;
+    }
+
     public void ExitGame()
     {
         Application.Quit();
