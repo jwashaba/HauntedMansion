@@ -18,7 +18,7 @@ public class Weapon : MonoBehaviour
     public float damage = 1f;
 
     // Track which enemies have been hit during the current active state
-    private HashSet<Enemy> hitEnemiesThisActivation = new HashSet<Enemy>();
+    private HashSet<MonoBehaviour> hitEnemiesThisActivation = new HashSet<MonoBehaviour>();
 
     private void OnEnable()
 {
@@ -53,13 +53,41 @@ public class Weapon : MonoBehaviour
     {
         if (!gameObject.activeInHierarchy) return; // only count hits while active
 
-        Enemy enemy = collision.GetComponentInParent<Enemy>();
+        // Enemy enemy = collision.GetComponentInParent<Enemy>();
+        // if (enemy != null && !hitEnemiesThisActivation.Contains(enemy))
+        // {
+        //     enemy.takeDamage(damage);
+        //     hitEnemiesThisActivation.Add(enemy);
+        //     Debug.Log("Hit enemy on trigger enter: " + collision.name);
+        // }
+
+        //         Enemy enemy = collision.GetComponentInParent<Enemy>();
+        //         EnemySheepDoll sheep = collision.GetComponentInParent<EnemySheepDoll>();
+
+        //         if (enemy != null && !hitEnemiesThisActivation.Contains(enemy))
+        //         {
+        //             enemy.takeDamage(damage);
+        //             hitEnemiesThisActivation.Add(enemy);
+        //         }
+        //         else if (sheep != null && !hitEnemiesThisActivation.Contains(sheep))
+        //         {
+        //             sheep.TakeDamage(damage);
+        //             hitEnemiesThisActivation.Add(sheep);
+        // }
+
+        Enemy enemy = collision.GetComponent<Enemy>();
+        EnemySheepDoll sheep = collision.GetComponent<EnemySheepDoll>();
+
         if (enemy != null && !hitEnemiesThisActivation.Contains(enemy))
         {
             enemy.takeDamage(damage);
             hitEnemiesThisActivation.Add(enemy);
-            Debug.Log("Hit enemy on trigger enter: " + collision.name);
         }
+        else if (sheep != null && !hitEnemiesThisActivation.Contains(sheep))
+        {
+            sheep.TakeDamage(damage);
+            hitEnemiesThisActivation.Add(sheep);
+        }   
     }
 
     private void OnDisable()
