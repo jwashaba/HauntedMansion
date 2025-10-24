@@ -240,6 +240,7 @@ public class MapManager : MonoBehaviour
     {
         if (!rooms.ContainsKey(key))
         {
+            
             if (roomCount == 5)
             {
                 Debug.Log("Room 5");
@@ -263,6 +264,18 @@ public class MapManager : MonoBehaviour
                 rooms[key] = newRoom;
 
                 GenerateObstacles(targetPos);
+
+                if (AstarPath.active != null)
+                {
+                    var gg = AstarPath.active.data.gridGraph;
+
+                    // Move the grid graph center to the room's position
+                    gg.center = (Vector3)newRoom.transform.position;
+
+                    // Recalculate all nodes so they align with the moved room
+                    AstarPath.active.Scan();
+                    Debug.Log($"Moved and rescanned grid graph for room at {gg.center}");
+                }
             }
             roomCount++;
         }
