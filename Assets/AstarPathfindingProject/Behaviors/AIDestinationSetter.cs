@@ -41,8 +41,8 @@ namespace Pathfinding {
 		void Update () {
 			if (target != null && ai != null) ai.destination = target.position;
 			// Debug.Log(target.position);
-			if(target != null) Debug.Log("target null");
-			if(ai != null) Debug.Log("ai null");
+			if(target == null) Debug.Log("target null");
+			if(ai == null) Debug.Log("ai null");
 		}
 	}
 }
