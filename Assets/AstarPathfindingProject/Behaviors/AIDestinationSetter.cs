@@ -40,7 +40,9 @@ namespace Pathfinding {
 		/// <summary>Updates the AI's destination every frame</summary>
 		void Update () {
 			if (target != null && ai != null) ai.destination = target.position;
-			
+			// Debug.Log(target.position);
+			if(target != null) Debug.Log("target null");
+			if(ai != null) Debug.Log("ai null");
 		}
 	}
 }
