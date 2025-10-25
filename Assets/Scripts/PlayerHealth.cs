@@ -37,6 +37,7 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player has died!");
         // Add death behavior: respawn, game over screen, disable controls, etc.
+        GameManagerScript.Instance.LoadDeathScene();
         gameObject.SetActive(false);
     }
 }
