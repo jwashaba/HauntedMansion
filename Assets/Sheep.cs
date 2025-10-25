@@ -10,6 +10,14 @@ public class EnemySheepDoll : MonoBehaviour
     [Header("Form References")]
     public GameObject sheep;      // "Sheep" child GameObject
     public GameObject wolfForm;   // "WolfForm" child GameObject
+    public GameObject bulletPrefab;
+    public Transform firePoint; // empty child where bullets spawn
+    public float bulletSpeed = 5f;
+    public float minFireRate = 1f; // minimum seconds between shots
+    public float maxFireRate = 3f; // maximum seconds between shots
+    private float fireCooldown;
+
+    private Transform player;
 
     private bool isTransformed = false;
 
@@ -19,8 +27,23 @@ public class EnemySheepDoll : MonoBehaviour
 
         if (sheep != null) sheep.SetActive(true);
         if (wolfForm != null) wolfForm.SetActive(false);
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        fireCooldown = Random.Range(minFireRate, maxFireRate);
     }
 
+    void Update()
+    {
+        if (player == null) return;
+
+        fireCooldown -= Time.deltaTime;
+        if (fireCooldown <= 0f)
+        {
+            ShootAtPlayer();
+            // Reset cooldown to a new random value
+            fireCooldown = Random.Range(minFireRate, maxFireRate);
+        }
+    }
+    
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
@@ -49,6 +72,18 @@ public class EnemySheepDoll : MonoBehaviour
         Debug.Log($"{gameObject.name} has transformed into its wolf form!");
     }
 
+    void ShootAtPlayer()
+    {
+        if (bulletPrefab == null || firePoint == null) return;
+
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        Bullet b = bullet.GetComponent<Bullet>();
+        if (b != null)
+        {
+            b.Shoot(player.position);
+        }
+    }
+    
     private void Die()
     {
         Debug.Log($"{gameObject.name} has been defeated!");
