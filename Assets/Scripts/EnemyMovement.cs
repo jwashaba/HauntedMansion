@@ -15,6 +15,7 @@ public class EnemyMovement : MonoBehaviour
     void Update()
     {
         faceVelocity();
+        transform.rotation = Quaternion.identity;
     }
 
     void faceVelocity()
