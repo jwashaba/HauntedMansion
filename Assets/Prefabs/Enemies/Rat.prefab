@@ -559,8 +559,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc9b4c1df87f14500b384b0e318bf96d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
-  transformHealth: 3
+  maxHealth: 2
+  transformHealth: 1
   sheep: {fileID: 5840322898761808074}
   wolfForm: {fileID: 196347447634597454}
   bulletPrefab: {fileID: 3056850423978749545, guid: bf1996040786f478eb730adc8ab122b7, type: 3}
