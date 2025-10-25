@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7339094729412286995}
   - component: {fileID: 7025493598275967411}
   - component: {fileID: 5902753243479838177}
+  - component: {fileID: 796387593941745606}
   m_Layer: 7
   m_Name: Eye
   m_TagString: Untagged
@@ -102,6 +103,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aIPath: {fileID: 7711867970815326006}
+--- !u!95 &796387593941745606
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196347447634597454}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4af554feba785d5458b9073f82e64dbe, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2237526678753775739
 GameObject:
   m_ObjectHideFlags: 0
