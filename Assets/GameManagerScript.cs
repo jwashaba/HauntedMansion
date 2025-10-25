@@ -18,6 +18,7 @@ public class GameManagerScript : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         Debug.Log("GameManager Awake called");
+        Cursor.visible = true;
     }
 
     public void MainMenuScene()
