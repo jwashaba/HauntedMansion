@@ -523,7 +523,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4817109280670109965, guid: b4320bcbbb4004976816240bf4de13e0, type: 3}
+      - m_Target: {fileID: 5068172343036954104, guid: b4320bcbbb4004976816240bf4de13e0, type: 3}
         m_TargetAssemblyTypeName: GameManagerScript, Assembly-CSharp
         m_MethodName: LoadFAQScene
         m_Mode: 1
