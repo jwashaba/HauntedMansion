@@ -21,7 +21,7 @@ public class GameManagerScript : MonoBehaviour
     }
 
     public void MainMenuScene()
-    {
+    {   
         // if (AudioManager.instance != null)
         // {
         //     AudioManager.instance.SetAmbienceParameter("Ambience Intensity",0.0f);
@@ -47,19 +47,10 @@ public class GameManagerScript : MonoBehaviour
         SceneManager.LoadScene("CreditsScene");
         Cursor.visible = true;
     }
-
-    public void LoadStartScene()
-    {
-        // AudioManager.instance.SetAmbienceParameter("Ambience Intensity",0.0f);
-        // AudioManager.instance.StopMusic();
-        // if (ScoreManager.instance != null) ScoreManager.instance.Reset();
-        SceneManager.LoadScene("StartScene");
-        Cursor.visible = true;
-    }
-
     public void LoadGameScene()
     {
         // AudioManager.instance.InitializeMusic(FMODEvents.instance.musicLevelOne);
+        SceneManager.LoadScene("GameScene");
         Cursor.visible = false;
     }
 
@@ -72,5 +63,6 @@ public class GameManagerScript : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+        Debug.Log("Game has exited.");
     }
 }
