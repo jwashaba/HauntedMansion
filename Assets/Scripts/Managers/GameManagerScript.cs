@@ -1,10 +1,15 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript Instance;
+    public RewardUI rewardUI;
+    public List<CursedPower> allPowers = new List<CursedPower>();
+    
 
     void Awake()
     {
@@ -65,5 +70,25 @@ public class GameManagerScript : MonoBehaviour
     {
         Application.Quit();
         Debug.Log("Game has exited.");
+    }
+
+    public void ShowRewardOptions(string dollName)
+    {
+        var options = allPowers
+            .Where(p => p.associatedDollName == dollName)
+            .OrderBy(x => Random.value)
+            .Take(3)
+            .ToList();
+
+        rewardUI.Open(options);
+    }
+
+    public void OnPowerChosen(CursedPower chosen)
+    {
+        // Use the singleton instead of FindObjectOfType
+        PlayerPowerManager.Instance.AddPower(chosen);
+
+        // Close the reward UI
+        rewardUI.Close();
     }
 }
